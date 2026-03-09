@@ -17,7 +17,7 @@ namespace FinTrackPro.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.23")
+                .HasAnnotation("ProductVersion", "8.0.24")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -101,6 +101,58 @@ namespace FinTrackPro.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("FinTrackPro.Domain.Entities.RecurrenceSchedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastGeneratedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RecurrenceSchedules");
+                });
+
             modelBuilder.Entity("FinTrackPro.Domain.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -110,7 +162,7 @@ namespace FinTrackPro.Infrastructure.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CategoryId")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -130,6 +182,9 @@ namespace FinTrackPro.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("RecurrenceScheduleId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("ToAccountId")
                         .HasColumnType("uuid");
 
@@ -147,6 +202,8 @@ namespace FinTrackPro.Infrastructure.Migrations
                     b.HasIndex("AccountId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("RecurrenceScheduleId");
 
                     b.HasIndex("ToAccountId");
 
@@ -252,6 +309,76 @@ namespace FinTrackPro.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FinTrackPro.Domain.Entities.RecurrenceSchedule", b =>
+                {
+                    b.HasOne("FinTrackPro.Domain.Entities.Account", null)
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FinTrackPro.Domain.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FinTrackPro.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("FinTrackPro.Domain.ValueObjects.Money", "Amount", b1 =>
+                        {
+                            b1.Property<Guid>("RecurrenceScheduleId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("Amount");
+
+                            b1.Property<int>("Currency")
+                                .HasColumnType("integer")
+                                .HasColumnName("Currency");
+
+                            b1.HasKey("RecurrenceScheduleId");
+
+                            b1.ToTable("RecurrenceSchedules");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RecurrenceScheduleId");
+                        });
+
+                    b.OwnsOne("FinTrackPro.Domain.ValueObjects.RecurrencePeriod", "RecurrencePeriod", b1 =>
+                        {
+                            b1.Property<Guid>("RecurrenceScheduleId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Interval")
+                                .HasColumnType("integer")
+                                .HasColumnName("Interval");
+
+                            b1.Property<int>("RecurrenceType")
+                                .HasColumnType("integer")
+                                .HasColumnName("RecurrenceType");
+
+                            b1.HasKey("RecurrenceScheduleId");
+
+                            b1.ToTable("RecurrenceSchedules");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RecurrenceScheduleId");
+                        });
+
+                    b.Navigation("Amount")
+                        .IsRequired();
+
+                    b.Navigation("RecurrencePeriod")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FinTrackPro.Domain.Entities.Transaction", b =>
                 {
                     b.HasOne("FinTrackPro.Domain.Entities.Account", null)
@@ -263,7 +390,13 @@ namespace FinTrackPro.Infrastructure.Migrations
                     b.HasOne("FinTrackPro.Domain.Entities.Category", null)
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FinTrackPro.Domain.Entities.RecurrenceSchedule", null)
+                        .WithMany()
+                        .HasForeignKey("RecurrenceScheduleId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FinTrackPro.Domain.Entities.Account", null)
                         .WithMany()

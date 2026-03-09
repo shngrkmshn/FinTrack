@@ -12,9 +12,9 @@ public class Transaction
     public string Description { get; private set; }
     public Guid AccountId { get; private set; }
     public Guid UserId { get; private set; }
-    //transfers between accounts do not have a category, and other transfers do not have ToAccounts
-    public Guid? CategoryId { get; private set; }
+    public Guid CategoryId { get; private set; }
     public Guid? ToAccountId { get; private set; }
+    public Guid? RecurrenceScheduleId { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
     public bool IsDeleted { get; private set; }
@@ -34,8 +34,9 @@ public class Transaction
         string description,
         Guid accountId,
         Guid userId,
-        Guid? categoryId = null,
-        Guid? toAccountId = null)
+        Guid categoryId,
+        Guid? toAccountId = null,
+        Guid? recurrenceScheduleId = null)
     {
         if (id == Guid.Empty)
         {
@@ -52,8 +53,13 @@ public class Transaction
             throw new ArgumentException("User id cannot be empty.", nameof(userId));
         }
 
+        if (categoryId == Guid.Empty)
+        {
+            throw new ArgumentException("Category id cannot be empty.", nameof(categoryId));
+        }
+
         ValidateDescription(description);
-        ValidateTransactionRules(transactionType, amount, categoryId, toAccountId);
+        ValidateTransactionRules(transactionType, amount, toAccountId);
 
         Id = id;
         TransactionType = transactionType;
@@ -64,6 +70,7 @@ public class Transaction
         UserId = userId;
         CategoryId = categoryId;
         ToAccountId = toAccountId;
+        RecurrenceScheduleId = recurrenceScheduleId;
         CreatedAt = DateTime.UtcNow;
     }
 
@@ -73,7 +80,8 @@ public class Transaction
         string description,
         Guid accountId,
         Guid userId,
-        Guid categoryId)
+        Guid categoryId,
+        Guid? recurrenceScheduleId = null)
     {
         if (amount.Amount <= 0)
         {
@@ -89,7 +97,8 @@ public class Transaction
             accountId,
             userId,
             categoryId,
-            toAccountId: null);
+            toAccountId: null,
+            recurrenceScheduleId: recurrenceScheduleId);
     }
 
     public static Transaction CreateExpense(
@@ -98,7 +107,8 @@ public class Transaction
         string description,
         Guid accountId,
         Guid userId,
-        Guid categoryId)
+        Guid categoryId,
+        Guid? recurrenceScheduleId = null)
     {
         if (amount.Amount <= 0)
         {
@@ -114,7 +124,8 @@ public class Transaction
             accountId,
             userId,
             categoryId,
-            toAccountId: null);
+            toAccountId: null,
+            recurrenceScheduleId: recurrenceScheduleId);
     }
 
     public static Transaction CreateTransfer(
@@ -123,7 +134,8 @@ public class Transaction
         string description,
         Guid fromAccountId,
         Guid toAccountId,
-        Guid userId)
+        Guid userId,
+        Guid categoryId)
     {
         if (amount.Amount <= 0)
         {
@@ -143,7 +155,7 @@ public class Transaction
             description,
             fromAccountId,
             userId,
-            categoryId: null,
+            categoryId,
             toAccountId: toAccountId);
     }
 
@@ -201,7 +213,6 @@ public class Transaction
     private static void ValidateTransactionRules(
         TransactionType transactionType,
         Money amount,
-        Guid? categoryId,
         Guid? toAccountId)
     {
         if (amount.Amount <= 0)
@@ -213,13 +224,6 @@ public class Transaction
         {
             case TransactionType.Income:
             case TransactionType.Expense:
-                if (!categoryId.HasValue)
-                {
-                    throw new ArgumentException(
-                        $"{transactionType} transactions must have a category.",
-                        nameof(categoryId));
-                }
-
                 if (toAccountId.HasValue)
                 {
                     throw new ArgumentException(
@@ -229,13 +233,6 @@ public class Transaction
                 break;
 
             case TransactionType.Transfer:
-                if (categoryId.HasValue)
-                {
-                    throw new ArgumentException(
-                        "Transfer transactions cannot have a category.",
-                        nameof(categoryId));
-                }
-
                 if (!toAccountId.HasValue)
                 {
                     throw new ArgumentException(

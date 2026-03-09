@@ -38,9 +38,12 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         builder.Property(t => t.UserId)
             .IsRequired();
 
-        builder.Property(t => t.CategoryId);
+        builder.Property(t => t.CategoryId)
+            .IsRequired();
 
         builder.Property(t => t.ToAccountId);
+
+        builder.Property(t => t.RecurrenceScheduleId);
 
         builder.Property(t => t.CreatedAt)
             .IsRequired();
@@ -65,7 +68,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         builder.HasOne<Category>()
             .WithMany()
             .HasForeignKey(t => t.CategoryId)
-            .IsRequired(false)
+            .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<Account>()
@@ -73,5 +76,11 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasForeignKey(t => t.ToAccountId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<RecurrenceSchedule>()
+            .WithMany()
+            .HasForeignKey(t => t.RecurrenceScheduleId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
