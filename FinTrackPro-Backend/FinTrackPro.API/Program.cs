@@ -24,6 +24,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapPost("/test/users", async (ApplicationDbContext db) =>
 {
     var user = User.Create(
