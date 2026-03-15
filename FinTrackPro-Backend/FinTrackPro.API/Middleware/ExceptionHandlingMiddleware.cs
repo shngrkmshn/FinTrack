@@ -23,7 +23,8 @@ public sealed class ExceptionHandlingMiddleware
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
+            LogException(exception);
+
             await HandleExceptionAsync(context, exception);
         }
     }
@@ -81,6 +82,20 @@ public sealed class ExceptionHandlingMiddleware
 
         context.Response.StatusCode = problemDetails.Status!.Value;
         await context.Response.WriteAsJsonAsync(problemDetails);
+    }
+
+    private void LogException(Exception exception)
+    {
+        switch (exception)
+        {
+            case ValidationException:
+            case UnauthorizedException:
+                _logger.LogWarning(exception, "{Message}", exception.Message);
+                break;
+            default:
+                _logger.LogError(exception, "{Message}", exception.Message);
+                break;
+        }
     }
 
     private static ValidationProblemDetails BuildValidationProblemDetails(ValidationException exception)
