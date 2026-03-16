@@ -8,15 +8,18 @@ namespace FinTrackPro.Application.Commands.Auth;
 public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, AuthTokenDto>
 {
     private readonly IUserRepository _userRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _jwtTokenService;
 
     public RegisterUserCommandHandler(
         IUserRepository userRepository,
+        ICategoryRepository categoryRepository,
         IPasswordHasher passwordHasher,
         IJwtTokenService jwtTokenService)
     {
         _userRepository = userRepository;
+        _categoryRepository = categoryRepository;
         _passwordHasher = passwordHasher;
         _jwtTokenService = jwtTokenService;
     }
@@ -36,6 +39,10 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
 
         await _userRepository.AddAsync(user, cancellationToken);
         await _userRepository.SaveChangesAsync(cancellationToken);
+
+        var uncategorized = Category.Create("Uncategorized", user.Id);
+        await _categoryRepository.AddAsync(uncategorized, cancellationToken);
+        await _categoryRepository.SaveChangesAsync(cancellationToken);
 
         var accessToken = _jwtTokenService.GenerateAccessToken(user);
         var refreshToken = _jwtTokenService.GenerateRefreshToken();
