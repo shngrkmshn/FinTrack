@@ -27,4 +27,8 @@ public sealed class CategoryRepository : ICategoryRepository
     public async Task<Category?> GetByIdAsync(Guid categoryId, Guid userId, CancellationToken cancellationToken) =>
         await _dbContext.Categories
             .FirstOrDefaultAsync(category => category.Id == categoryId && category.UserId == userId, cancellationToken);
+
+    public async Task<Category?> GetUncategorizedAsync(Guid userId, CancellationToken cancellationToken) =>
+        await _dbContext.Categories
+            .FirstOrDefaultAsync(category => category.Name == "Uncategorized" && category.UserId == userId, cancellationToken);
 }

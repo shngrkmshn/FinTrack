@@ -8,4 +8,5 @@ public interface ICategoryRepository
     Task SaveChangesAsync(CancellationToken cancellationToken);
     Task<IReadOnlyList<Category>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
     Task<Category?> GetByIdAsync(Guid categoryId, Guid userId, CancellationToken cancellationToken);
+    Task<Category?> GetUncategorizedAsync(Guid userId, CancellationToken cancellationToken);
 }
