@@ -15,6 +15,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<RecurrenceSchedule> RecurrenceSchedules => Set<RecurrenceSchedule>();
+    public DbSet<Budget> Budgets => Set<Budget>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
