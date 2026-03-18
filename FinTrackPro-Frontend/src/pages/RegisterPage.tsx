@@ -41,14 +41,14 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-                <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4">
+            <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg shadow-black/20 p-8">
+                <h1 className="text-2xl font-bold text-center text-gray-100 mb-6">
                     Create your account
                 </h1>
 
                 {error && (
-                    <div className="bg-red-50 text-red-600 text-sm rounded-md p-3 mb-4 whitespace-pre-line">
+                    <div className="bg-red-900/30 text-red-400 text-sm rounded-md p-3 mb-4 whitespace-pre-line">
                         {error}
                     </div>
                 )}
@@ -56,7 +56,7 @@ export default function RegisterPage() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex gap-4">
                         <div className="flex-1">
-                            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-1">
                                 First name
                             </label>
                             <input
@@ -65,12 +65,13 @@ export default function RegisterPage() {
                                 required
                                 value={firstName}
                                 onChange={(event) => setFirstName(event.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md
-                                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md
+                                           focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                                           placeholder-gray-400"
                             />
                         </div>
                         <div className="flex-1">
-                            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-1">
                                 Last name
                             </label>
                             <input
@@ -79,14 +80,15 @@ export default function RegisterPage() {
                                 required
                                 value={lastName}
                                 onChange={(event) => setLastName(event.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md
-                                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md
+                                           focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                                           placeholder-gray-400"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                             Email
                         </label>
                         <input
@@ -95,14 +97,15 @@ export default function RegisterPage() {
                             required
                             value={email}
                             onChange={(event) => setEmail(event.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md
-                                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md
+                                       focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                                       placeholder-gray-400"
                             placeholder="you@example.com"
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
                             Password
                         </label>
                         <input
@@ -112,8 +115,9 @@ export default function RegisterPage() {
                             minLength={8}
                             value={password}
                             onChange={(event) => setPassword(event.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md
-                                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md
+                                       focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
+                                       placeholder-gray-400"
                             placeholder="Minimum 8 characters"
                         />
                     </div>
@@ -121,18 +125,18 @@ export default function RegisterPage() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md
-                                   hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500
-                                   focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed
-                                   transition-colors"
+                        className="w-full py-2 px-4 bg-emerald-600 text-white font-medium rounded-md
+                                   hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500
+                                   focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50
+                                   disabled:cursor-not-allowed transition-colors"
                     >
                         {isLoading ? 'Creating account...' : 'Create account'}
                     </button>
                 </form>
 
-                <p className="mt-6 text-center text-sm text-gray-600">
+                <p className="mt-6 text-center text-sm text-gray-400">
                     Already have an account?{' '}
-                    <Link to="/login" className="text-blue-600 hover:text-blue-500 font-medium">
+                    <Link to="/login" className="text-emerald-500 hover:text-emerald-400 font-medium">
                         Sign in
                     </Link>
                 </p>
