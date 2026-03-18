@@ -3,6 +3,8 @@ import { useBudgets } from '../hooks/useBudgets.ts'
 import { useCategories } from '../hooks/useCategories.ts'
 import { formatCurrency } from '../types/account.ts'
 import type { Currency } from '../types/account.ts'
+import { BUDGET_PERIOD_LABELS } from '../types/budget.ts'
+import type { BudgetPeriod } from '../types/budget.ts'
 import CreateBudgetModal from '../components/CreateBudgetModal.tsx'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext.tsx'
@@ -93,9 +95,14 @@ export default function BudgetsPage() {
                                 className="bg-gray-800 rounded-lg p-5 shadow-lg shadow-black/20"
                             >
                                 <h3 className="text-lg font-semibold text-gray-100 mb-1">{budget.name}</h3>
-                                <span className="text-xs bg-gray-700 text-gray-300 rounded-full px-2 py-0.5">
-                                    {getCategoryName(budget.categoryId)}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs bg-gray-700 text-gray-300 rounded-full px-2 py-0.5">
+                                        {getCategoryName(budget.categoryId)}
+                                    </span>
+                                    <span className="text-xs bg-emerald-900/50 text-emerald-400 rounded-full px-2 py-0.5">
+                                        {BUDGET_PERIOD_LABELS[budget.period as BudgetPeriod]}
+                                    </span>
+                                </div>
 
                                 <div className="mt-4 mb-2">
                                     <div className="flex justify-between text-sm mb-1">
@@ -118,7 +125,7 @@ export default function BudgetsPage() {
                                 </div>
 
                                 <p className="text-xs text-gray-500 mt-3">
-                                    {new Date(budget.periodStartDate).toLocaleDateString()} — {new Date(budget.periodEndDate).toLocaleDateString()}
+                                    Current period: {new Date(budget.periodStartDate).toLocaleDateString()} — {new Date(budget.periodEndDate).toLocaleDateString()}
                                 </p>
                             </div>
                         ))}

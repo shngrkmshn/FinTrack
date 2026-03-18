@@ -14,8 +14,8 @@ public sealed class DateRange : IEquatable<DateRange>
                 nameof(startDate));
         }
 
-        StartDate = startDate.Date;
-        EndDate = endDate.Date;
+        StartDate = DateTime.SpecifyKind(startDate.Date, DateTimeKind.Utc);
+        EndDate = DateTime.SpecifyKind(endDate.Date, DateTimeKind.Utc);
     }
 
     public TimeSpan Duration => EndDate - StartDate;

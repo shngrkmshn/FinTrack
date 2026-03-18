@@ -3,7 +3,7 @@ import axios from 'axios'
 import Modal from './Modal.tsx'
 import { Currency, CURRENCY_LABELS } from '../types/account.ts'
 import type { CategoryDto } from '../types/category.ts'
-import type { CreateBudgetRequest } from '../types/budget.ts'
+import { BudgetPeriod, BUDGET_PERIOD_LABELS, type CreateBudgetRequest } from '../types/budget.ts'
 
 interface CreateBudgetModalProperties {
     isOpen: boolean
@@ -22,8 +22,7 @@ export default function CreateBudgetModal({
     const [categoryId, setCategoryId] = useState('')
     const [amount, setAmount] = useState('')
     const [currency, setCurrency] = useState<Currency>(Currency.USD)
-    const [periodStartDate, setPeriodStartDate] = useState('')
-    const [periodEndDate, setPeriodEndDate] = useState('')
+    const [period, setPeriod] = useState<BudgetPeriod>(BudgetPeriod.Monthly)
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
@@ -32,8 +31,7 @@ export default function CreateBudgetModal({
         setCategoryId('')
         setAmount('')
         setCurrency(Currency.USD)
-        setPeriodStartDate('')
-        setPeriodEndDate('')
+        setPeriod(BudgetPeriod.Monthly)
         setError('')
     }
 
@@ -53,8 +51,7 @@ export default function CreateBudgetModal({
                 categoryId,
                 amount: parseFloat(amount),
                 currency,
-                periodStartDate,
-                periodEndDate,
+                period,
             })
             resetForm()
             onClose()
@@ -163,36 +160,23 @@ export default function CreateBudgetModal({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="budgetStartDate" className="block text-sm font-medium text-gray-300 mb-1">
-                            Period Start
-                        </label>
-                        <input
-                            id="budgetStartDate"
-                            type="date"
-                            required
-                            value={periodStartDate}
-                            onChange={(event) => setPeriodStartDate(event.target.value)}
-                            className="w-full px-3 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md
-                                       focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="budgetEndDate" className="block text-sm font-medium text-gray-300 mb-1">
-                            Period End
-                        </label>
-                        <input
-                            id="budgetEndDate"
-                            type="date"
-                            required
-                            value={periodEndDate}
-                            onChange={(event) => setPeriodEndDate(event.target.value)}
-                            className="w-full px-3 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md
-                                       focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                        />
-                    </div>
+                <div>
+                    <label htmlFor="budgetPeriod" className="block text-sm font-medium text-gray-300 mb-1">
+                        Recurrence
+                    </label>
+                    <select
+                        id="budgetPeriod"
+                        value={period}
+                        onChange={(event) => setPeriod(Number(event.target.value) as BudgetPeriod)}
+                        className="w-full px-3 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md
+                                   focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    >
+                        {Object.entries(BUDGET_PERIOD_LABELS).map(([value, label]) => (
+                            <option key={value} value={value}>
+                                {label}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-2">
