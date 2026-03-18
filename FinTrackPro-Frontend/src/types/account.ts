@@ -1,24 +1,28 @@
-export enum AccountType {
-    Checking = 0,
-    Savings = 1,
-    CreditCard = 2,
-    Investment = 3,
-    Cash = 4,
-    Loan = 5,
-}
+export const AccountType = {
+    Checking: 0,
+    Savings: 1,
+    CreditCard: 2,
+    Investment: 3,
+    Cash: 4,
+    Loan: 5,
+} as const
 
-export enum Currency {
-    USD = 0,
-    EUR = 1,
-    GBP = 2,
-    JPY = 3,
-    CAD = 4,
-    AUD = 5,
-    CHF = 6,
-    CNY = 7,
-    INR = 8,
-    TRY = 9,
-}
+export type AccountType = (typeof AccountType)[keyof typeof AccountType]
+
+export const Currency = {
+    USD: 0,
+    EUR: 1,
+    GBP: 2,
+    JPY: 3,
+    CAD: 4,
+    AUD: 5,
+    CHF: 6,
+    CNY: 7,
+    INR: 8,
+    TRY: 9,
+} as const
+
+export type Currency = (typeof Currency)[keyof typeof Currency]
 
 export interface AccountDto {
     id: string

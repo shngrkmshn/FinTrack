@@ -1,8 +1,10 @@
-export enum TransactionType {
-    Income = 0,
-    Expense = 1,
-    Transfer = 2,
-}
+export const TransactionType = {
+    Income: 0,
+    Expense: 1,
+    Transfer: 2,
+} as const
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
 
 export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
     [TransactionType.Income]: 'Income',
